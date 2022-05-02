@@ -12,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableSwagger2
 @Configuration
-public class Swagger2Config {
+public class SwaggerToConfig {
 
     private static final String API_TITLE = "게시판 API";
     private static final String API_VERSION = "0.0.1";

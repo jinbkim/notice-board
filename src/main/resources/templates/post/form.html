@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <header th:replace="fragments/header :: header"></header>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="page-header">
+    <h1 th:text="#{notice-board.register}"></h1>
+  </div>
+  <br/>
+
+  <form th:action method="post" enctype="multipart/form-data">
+    <table class="table">
+      <tr>
+        <th style="padding:13px 0 0 15px;" th:text="#{title}"></th>
+        <td>
+          <input type="text" class="form-control input-sm" name="title">
+        </td>
+      </tr>
+
+      <tr>
+        <th style="padding:13px 0 0 15px;" th:text="#{uploadFile}"></th>
+        <td>
+          <input type="file" multiple="multiple" name="uploadFiles">
+        </td>
+      </tr>
+
+      <tr>
+        <th style="padding:13px 0 0 15px;" th:text="#{content}"></th>
+        <td>
+        <textarea name="content" class="form-control input-sm"
+                  maxlength="140" rows="70" style="height: 200px;"></textarea>
+          <span class="help-block"></span>
+        </td>
+      </tr>
+    </table>
+
+    <!-- 목록으로 -->
+    <div class="float-left">
+      <a href="/post/list" class="btn btn-success" th:text="#{back}"></a>
+    </div>
+
+    <!-- 저장 버튼 -->
+    <div class="float-right">
+      <input type="submit" class="btn btn-primary" th:value="#{register}">
+    </div>
+
+  </form>
+</div>
+<th:block layout:fragment="contentsScript">
+</th:block>
+<th:block th:replace="fragments/script :: script"></th:block>
+</body>
+</html>

@@ -17,13 +17,21 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Post {
-
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UploadFile {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column
-    private String title;
+    private Integer postId;
     @Column
-    private String content;
+    private String uploadFilename;
+    @Column
+    private String storeFilename;
+
+    public UploadFile(Integer postId, String uploadFilename, String storeFilename) {
+        this.postId = postId;
+        this.uploadFilename = uploadFilename;
+        this.storeFilename = storeFilename;
+    }
 }
