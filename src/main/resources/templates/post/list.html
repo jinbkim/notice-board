@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <header th:replace="fragments/header :: header('notice-board.list')"></header>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="page-header">
+    <h1 th:text="#{notice-board.list}"></h1>
+  </div>
+
+  <div class="float-right" style="width:100px;margin:10px 0;">
+    <a href="/post/create" class="btn btn-primary btn-block" th:text="#{register}"></a>
+  </div>
+  <br/>
+  <br/>
+  <br/>
+
+  <div class="container-fluid">
+    <div class="row">
+      <table class="table table-hover">
+        <thead>
+        <tr class="warning">
+          <th class="col-sm-1" th:text="#{number}"></th>
+          <th class="col-sm-5" th:text="#{title}"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="postPage: ${postPageList}">
+          <td th:text="${postPage.id}"></td>
+          <td>
+            <a th:href="'page/'+${postPage.id}" th:text="${postPage.title}"></a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 이 위치에 Bootstrap/Jquery core JavaScript가 구성된다. -->
+
+<!-- Page level plugin JavaScript-->
+<th:block layout:fragment="contentsScript">
+</th:block>
+<!-- Custom scripts for this pages-->
+<th:block layout:fragment="customScript">
+</th:block>
+</body>
+</html>

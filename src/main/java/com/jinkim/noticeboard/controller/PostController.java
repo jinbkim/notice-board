@@ -45,7 +45,7 @@ public class PostController {
     }
 
     @GetMapping("/page/{postId}")
-    public String findPostPage(@PathVariable Integer postId, Model model) {
+    public String findPage(@PathVariable Integer postId, Model model) {
         Post post = postService.findPostById(postId);
         List<UploadFile> uploadFiles = uploadFileService.getUploadFiles(postId);
 
@@ -66,6 +66,11 @@ public class PostController {
         return uploadFileService.findUploadFiles(postId);
     }
 
+    @GetMapping("/list")
+    public String findPageList(Model model) {
+        model.addAttribute("postPageList", postService.findPageList());
+        return "/post/list";
+    }
 
 
 

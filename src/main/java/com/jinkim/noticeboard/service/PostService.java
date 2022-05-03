@@ -2,9 +2,9 @@ package com.jinkim.noticeboard.service;
 
 import com.jinkim.noticeboard.dto.PostDto;
 import com.jinkim.noticeboard.entity.Post;
-import com.jinkim.noticeboard.repository.FileRepository;
 import com.jinkim.noticeboard.repository.PostRepository;
 import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    private final FileRepository fileRepository;
-    private final UploadFileService uploadFileService;
 
     public Post createPost(@ModelAttribute PostDto postDto) throws IOException {
         Post post = Post.builder()
@@ -30,11 +28,10 @@ public class PostService {
         return postRepository.findById(id).orElse(null);
     }
 
+    public List<Post> findPageList() {
+        return postRepository.findAll();
+    }
 
-
-//    public Post findPostById(Integer id) {
-//        return postRepository.findById(id).orElse(new Post());
-//    }
 
 //    public PostDto[] findPostList(Integer postAmount, Integer pageNumber) {
 //        List<Post> postList = postRepository.findAll();

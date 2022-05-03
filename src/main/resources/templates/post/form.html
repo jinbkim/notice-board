@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <header th:replace="fragments/header :: header"></header>
+  <header th:replace="fragments/header :: header('notice-board.register')"></header>
 </head>
 
 <body>
@@ -24,7 +24,7 @@
       </tr>
 
       <tr>
-        <th style="padding:13px 0 0 15px;" th:text="#{uploadFile}"></th>
+        <th style="padding:13px 0 0 15px;" th:text="#{upload-file}"></th>
         <td>
           <input type="file" multiple="multiple" name="uploadFiles">
         </td>

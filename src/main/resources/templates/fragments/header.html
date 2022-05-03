@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <html lang="kr">
-<header th:fragment="header">
+<header th:fragment="header(title)">
   <head>
 
     <meta charset="UTF-8" content="text/html" http-equiv="content-type">
-    <title th:text="#{notice-board}"></title>
+    <title th:text="#{${title}}"></title>
 
     <!--    부트스트랩 적용-->
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -14,12 +14,14 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           rel="stylesheet">
+    <link rel='stylesheet' th:href='@{/webjars/bootstrap/3.4.1/css/bootstrap.min.css}'>
+    <script src="/js/jquery.twbsPagination.js"></script>
 
   </head>
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#" th:text="#{home}"></a>
+      <a class="navbar-brand" href="/post/list" th:text="#{home}"></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
