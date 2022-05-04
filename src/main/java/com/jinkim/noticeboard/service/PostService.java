@@ -8,7 +8,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Service
 @Slf4j
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public class PostService {
     private final PostRepository postRepository;
 
-    public Post createPost(@ModelAttribute PostDto postDto) throws IOException {
+    public Post createPost(PostDto postDto) throws IOException {
         Post post = Post.builder()
             .title(postDto.getTitle())
             .content(postDto.getContent())
@@ -24,12 +23,25 @@ public class PostService {
         return postRepository.save(post);
     }
 
+
+
     public Post findPostById(Integer id) {
         return postRepository.findById(id).orElse(null);
     }
 
     public List<Post> findPageList() {
         return postRepository.findAll();
+    }
+
+
+
+    public Post updatePost(PostDto postDto) throws IOException {
+        Post post = Post.builder()
+            .id(postDto.getId())
+            .title(postDto.getTitle())
+            .content(postDto.getContent())
+            .build();
+        return postRepository.save(post);
     }
 
 
@@ -48,7 +60,7 @@ public class PostService {
 //        return postDtos;
 //    }
 //
-//    public void modifyPost(PostDto postDto) {
+//    public void updatePost(PostDto postDto) {
 //        Post post = postDtotoPost(postDto);
 //        postRepository.save(post);
 //    }

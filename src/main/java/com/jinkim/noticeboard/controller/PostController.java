@@ -44,6 +44,8 @@ public class PostController {
         return "redirect:/post/page/{postId}";
     }
 
+
+
     @GetMapping("/page/{postId}")
     public String findPage(@PathVariable Integer postId, Model model) {
         Post post = postService.findPostById(postId);
@@ -74,24 +76,29 @@ public class PostController {
 
 
 
+    @GetMapping("/update/{postId}")
+    public String findUpdatePage(@PathVariable Integer postId, Model model) {
+        Post post = postService.findPostById(postId);
+        PostDto postDto = PostDto.builder()
+            .id(post.getId())
+            .title(post.getTitle())
+            .content(post.getContent())
+            .build();
 
+        model.addAttribute("postDto", postDto);
+        return "/post/form";
+    }
 
+    @PostMapping("/update/{postId}")
+    public String updatePost(@ModelAttribute PostDto postDto, RedirectAttributes redirectAttributes, @PathVariable Integer postId) throws IOException {
+        postDto.setId(postId);
+        Post post = postService.updatePost(postDto);
+        uploadFileService.addFiles(post.getId(), postDto.getUploadFiles());
 
-//
-//    @GetMapping
-//    public void findPost(Integer id) {
-//        postService.findPostById(id);
-//    }
-//
-//    @GetMapping("/list")
-//    public void findPostList(Integer postAmount, Integer pageNumber) {
-//        postService.findPostList(postAmount, pageNumber);
-//    }
-//
-//    @PostMapping
-//    public void modifyPost(PostDto postDto) {
-//        postService.modifyPost(postDto);
-//    }
+        redirectAttributes.addAttribute("postId", post.getId());
+        return "redirect:/post/page/{postId}";
+    }
+
 //
 //    @DeleteMapping
 //    public void deletePost(Integer id) {

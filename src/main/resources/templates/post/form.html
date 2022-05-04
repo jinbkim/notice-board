@@ -10,7 +10,8 @@
 <div class="container">
 
   <div class="page-header">
-    <h1 th:text="#{notice-board.register}"></h1>
+    <h1 th:if="${postDto.id == null}"  th:text="#{notice-board.register}"></h1>
+    <h1 th:if="${postDto.id != null}"  th:text="#{notice-board.update}"></h1>
   </div>
   <br/>
 
@@ -19,7 +20,7 @@
       <tr>
         <th style="padding:13px 0 0 15px;" th:text="#{title}"></th>
         <td>
-          <input type="text" class="form-control input-sm" name="title">
+          <input type="text" class="form-control input-sm" name="title" th:value="${postDto.title}">
         </td>
       </tr>
 
@@ -34,7 +35,7 @@
         <th style="padding:13px 0 0 15px;" th:text="#{content}"></th>
         <td>
         <textarea name="content" class="form-control input-sm"
-                  maxlength="140" rows="70" style="height: 200px;"></textarea>
+                  maxlength="140" rows="70" style="height: 200px;" th:text="${postDto.content}"></textarea>
           <span class="help-block"></span>
         </td>
       </tr>

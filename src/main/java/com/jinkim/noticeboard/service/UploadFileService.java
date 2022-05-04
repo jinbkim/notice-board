@@ -1,7 +1,7 @@
 package com.jinkim.noticeboard.service;
 
 import com.jinkim.noticeboard.entity.UploadFile;
-import com.jinkim.noticeboard.repository.FileRepository;
+import com.jinkim.noticeboard.repository.UploadFileRepository;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -24,28 +24,32 @@ import org.springframework.web.util.UriUtils;
 @Slf4j
 @RequiredArgsConstructor
 public class UploadFileService {
-    private final FileRepository fileRepository;
+    private final UploadFileRepository uploadFileRepository;
 
     @Value("${file.dir}")
     private String fileDir;
 
     public void addFiles(Integer postId, List<MultipartFile> multipartFiles) throws IOException {
-        if (multipartFiles == null)
+        // 첨부파일을 올리지 않아도 MultipartFile 한개가 담겨져 있기 때문에, 첫번째 파일의 originalFilename이 비어있으면 첨부파일을 안담은걸로 간주
+        if (multipartFiles.get(0).getOriginalFilename().isEmpty())
             return ;
+        deleteUploadFileByPostId(postId);  // 첨부파일을 수정했으면 기존에 있던 첨부파일 삭제
 
         for (MultipartFile multipartFile : multipartFiles) {
             if (multipartFile.isEmpty())
                 continue;
-            fileRepository.save(addFile(postId, multipartFile));
+            uploadFileRepository.save(addFile(postId, multipartFile));
         }
     }
+
+
 
     public String getFullPath(String fileName) {
         return fileDir+fileName;
     }
 
     public ResponseEntity<Resource> findUploadFiles(Integer postId) throws MalformedURLException {
-        UploadFile uploadFile = fileRepository.findById(postId).orElse(null);
+        UploadFile uploadFile = uploadFileRepository.findById(postId).orElse(null);
         UrlResource urlResource = new UrlResource("file:" + getFullPath(uploadFile.getStoreFilename()));
         String encodedUploadFilename = UriUtils.encode(uploadFile.getUploadFilename(), StandardCharsets.UTF_8);
         String contentDisposition = "attachment; filename=\"" + encodedUploadFilename + "\"";
@@ -53,11 +57,24 @@ public class UploadFileService {
     }
 
     public List<UploadFile> getUploadFiles(Integer postId) {
-        List<UploadFile> uploadFiles = fileRepository.findAll();
+        List<UploadFile> uploadFiles = uploadFileRepository.findAll();
 
         return uploadFiles.stream()
             .filter(file -> file.getPostId() == postId)
             .collect(Collectors.toList());
+    }
+
+
+
+    public void deleteUploadFileByPostId(Integer postId) {
+        findUploadFileByPostId(postId).stream()
+            .forEach(uploadFile -> { uploadFileRepository.delete(uploadFile); });
+    }
+
+    public List<UploadFile> findUploadFileByPostId(Integer postId) {
+       return uploadFileRepository.findAll().stream()
+           .filter(uploadFile -> uploadFile.getPostId() == postId)
+           .collect(Collectors.toList());
     }
 
 
