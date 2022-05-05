@@ -45,6 +45,13 @@ public class PostService {
     }
 
 
+    public void deletePost(Integer id) {
+        Post post = postRepository.findById(id).orElse(null);
+        postRepository.delete(post);
+    }
+
+
+
 //    public PostDto[] findPostList(Integer postAmount, Integer pageNumber) {
 //        List<Post> postList = postRepository.findAll();
 //        PostDto[] postDtos = new PostDto[postAmount];
@@ -60,24 +67,5 @@ public class PostService {
 //        return postDtos;
 //    }
 //
-//    public void updatePost(PostDto postDto) {
-//        Post post = postDtotoPost(postDto);
-//        postRepository.save(post);
-//    }
-//
-//    public void deletePost(Integer id) {
-//        Post post = postRepository.findById(id).get();
-//        postRepository.delete(post);
-//    }
-//
-//
-//    private Post postDtotoPost(PostDto postDto) {
-//        Post post = Post.builder()
-//            .title(postDto.getTitle())
-//            .content(postDto.getContent())
-//            .file(postDto.getFile())
-//            .build();
-//        return post;
-//    }
 
 }

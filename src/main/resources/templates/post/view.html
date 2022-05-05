@@ -50,7 +50,7 @@
     <!-- 수정/삭제 버튼 -->
   <div class="float-right">
     <button type="button" th:onclick="|location.href= '/post/update/' + '${post.id}'|" class="btn btn-info" th:text="#{update}"></button>
-<!--    <button type="button" onclick="location.href = '/post/delete'" class="btn btn-danger" th:text="#{delete}"></button>-->
+    <button type="button" th:onclick="|location.href= '/post/delete/' + '${post.id}'|" class="btn btn-danger" th:text="#{delete}"></button>
   </div>
 
 </div>

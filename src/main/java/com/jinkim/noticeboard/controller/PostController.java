@@ -99,9 +99,12 @@ public class PostController {
         return "redirect:/post/page/{postId}";
     }
 
-//
-//    @DeleteMapping
-//    public void deletePost(Integer id) {
-//        postService.deletePost(id);
-//    }
+
+
+    @GetMapping("/delete/{postId}")
+    public String deletePage(@PathVariable Integer postId) {
+        postService.deletePost(postId);
+        uploadFileService.deleteUploadFileByPostId(postId);
+        return "redirect:/post/list";
+    }
 }
