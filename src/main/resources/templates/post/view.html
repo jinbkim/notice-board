@@ -27,7 +27,9 @@
       <th style="padding:13px 0 0 15px;" th:text="#{upload-file}"></th>
       <td>
         <span th:each="uploadFile: ${uploadFiles}">
-          <img th:src="|/post/upload-file/dpwnload/${uploadFile.storeFilename}|" width="400"/>
+          <a th:href="|/post/upload-file/download/${uploadFile.id}|">
+          <img th:src="|/post/upload-file/find/${uploadFile.storeFilename}|" width="400">
+          </a>
           <br> <br>
         </span>
       </td>
@@ -49,7 +51,7 @@
 
     <!-- 수정/삭제 버튼 -->
   <div class="float-right">
-    <button type="button" th:onclick="|location.href= '/post/update/' + '${post.id}'|" class="btn btn-info" th:text="#{update}"></button>
+    <button type="button" th:onclick="|location.href= '/post/update/' + '${post.id}'|" th:method="put" class="btn btn-info" th:text="#{update}"></button>
     <button type="button" th:onclick="|location.href= '/post/delete/' + '${post.id}'|" class="btn btn-danger" th:text="#{delete}"></button>
   </div>
 

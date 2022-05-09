@@ -29,12 +29,23 @@ public class PostController {
     private final PostService postService;
     private final UploadFileService uploadFileService;
 
+    /**
+     * 게시물 생성 페이지 조회
+     * @param model 게시물 생성 폼을 저장한 뒤 뷰에 전달
+     * @return 게시물 생성 페이지
+     */
     @GetMapping("/create")
     public String findCreatePage(Model model) {
         model.addAttribute("postDto", new PostDto());
         return "/post/form";
     }
 
+    /**
+     * 사용자가 입력한 데이터가 담긴 게시물 생성 폼으로 게시물 생성
+     * @param postDto 사용자가 입력한 데이터가 담긴 게시물 생성 폼
+     * @param redirectAttributes 게시물 아이디를 뷰에 전달
+     * @return 게시물 조회 페이지 주소
+     */
     @PostMapping("/create")
     public String createPost(@ModelAttribute PostDto postDto, RedirectAttributes redirectAttributes) throws IOException {
         Post post = postService.createPost(postDto);
@@ -46,6 +57,12 @@ public class PostController {
 
 
 
+    /**
+     * 게시물 조회 페이지 조회
+     * @param postId 조회할 게시물 아이디
+     * @param model 게시물 데이터를 담아 뷰에 전달
+     * @return 게시물 조회 페이지
+     */
     @GetMapping("/page/{postId}")
     public String findPage(@PathVariable Integer postId, Model model) {
         Post post = postService.findPostById(postId);
@@ -57,17 +74,32 @@ public class PostController {
         return "/post/view";
     }
 
+    /**
+     * 청부파일 조회
+     * @param filename 조회할 파일 이름
+     * @return 조회할 파일
+     */
     @ResponseBody
-    @GetMapping("/upload-file/dpwnload/{filename}")
-    public Resource downloadUploadFiles(@PathVariable String filename) throws MalformedURLException {
+    @GetMapping("/upload-file/find/{filename}")
+    public Resource findUploadFiles(@PathVariable String filename) throws MalformedURLException {
         return new UrlResource("file:" + uploadFileService.getFullPath(filename));
     }
 
-    @GetMapping("/upload-file/find/{postId}")
-    public ResponseEntity<Resource> findUploadFiles(@PathVariable Integer postId) throws MalformedURLException {
-        return uploadFileService.findUploadFiles(postId);
+    /**
+     * 첨부파일 다운로드
+     * @param id 다운로드할 파일 아이디
+     * @return 다운로드할 파일
+     */
+    @GetMapping("/upload-file/download/{id}")
+    public ResponseEntity<Resource> downloadUploadFiles(@PathVariable Integer id) throws MalformedURLException {
+        return uploadFileService.downloadUploadFiles(id);
     }
 
+    /**
+     * 게시물 리스트 조회
+     * @param model 게시물 리스트를 저장한뒤 뷰에 전달
+     * @return 게시물 리스트 조회 페이지
+     */
     @GetMapping("/list")
     public String findPageList(Model model) {
         model.addAttribute("postPageList", postService.findPageList());
@@ -76,19 +108,28 @@ public class PostController {
 
 
 
+    /**
+     * 게시물 수정 페이지 조회
+     * @param postId 수정할 게시물 아이디
+     * @param model 게시물 수정 폼을 저장한 뒤 뷰에 전달
+     * @return 게시물 수정 페이지
+     */
     @GetMapping("/update/{postId}")
     public String findUpdatePage(@PathVariable Integer postId, Model model) {
         Post post = postService.findPostById(postId);
-        PostDto postDto = PostDto.builder()
-            .id(post.getId())
-            .title(post.getTitle())
-            .content(post.getContent())
-            .build();
+        PostDto postDto = new PostDto(post.getId(), post.getTitle(), post.getContent());
 
         model.addAttribute("postDto", postDto);
         return "/post/form";
     }
 
+    /**
+     * 게시물 수정
+     * @param postDto 사용자가 입력한 데이터가 담긴 게시물 수정 폼
+     * @param redirectAttributes 게시물 아이디를 뷰에 전달
+     * @param postId 수정할 게시물 아이디
+     * @return 게시물 조회 페이지
+     */
     @PostMapping("/update/{postId}")
     public String updatePost(@ModelAttribute PostDto postDto, RedirectAttributes redirectAttributes, @PathVariable Integer postId) throws IOException {
         postDto.setId(postId);
@@ -101,6 +142,11 @@ public class PostController {
 
 
 
+    /**
+     * 게시물 삭제
+     * @param postId 삭제할 게시물 아이디
+     * @return 게시물 리스트 조회 페이지
+     */
     @GetMapping("/delete/{postId}")
     public String deletePage(@PathVariable Integer postId) {
         postService.deletePost(postId);

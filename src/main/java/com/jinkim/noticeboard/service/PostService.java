@@ -15,6 +15,11 @@ import org.springframework.stereotype.Service;
 public class PostService {
     private final PostRepository postRepository;
 
+    /**
+     * 게시물 생성
+     * @param postDto 게시물 생성 폼
+     * @return 생성된 게시물
+     */
     public Post createPost(PostDto postDto) throws IOException {
         Post post = Post.builder()
             .title(postDto.getTitle())
@@ -25,16 +30,29 @@ public class PostService {
 
 
 
+    /**
+     * 게시물 조회
+     * @param id 조회할 게시물 아이디
+     * @return 조회할 게시물
+     */
     public Post findPostById(Integer id) {
         return postRepository.findById(id).orElse(null);
     }
 
+    /**
+     * 게시물 리스트 조회
+     * @return 게시물 리스트
+     */
     public List<Post> findPageList() {
         return postRepository.findAll();
     }
 
 
-
+    /**
+     * 게시물 수정
+     * @param postDto 게시물 수정 폼
+     * @return 수정된 게시물
+     */
     public Post updatePost(PostDto postDto) throws IOException {
         Post post = Post.builder()
             .id(postDto.getId())
@@ -45,6 +63,11 @@ public class PostService {
     }
 
 
+
+    /**
+     * 게시물 삭제
+     * @param id 삭제할 게시물 아이디
+     */
     public void deletePost(Integer id) {
         Post post = postRepository.findById(id).orElse(null);
         postRepository.delete(post);

@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDto {
@@ -18,4 +17,10 @@ public class PostDto {
     private String title;
     private String content;
     private List<MultipartFile> uploadFiles;
+
+    public PostDto(Integer id, String title, String content) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+    }
 }

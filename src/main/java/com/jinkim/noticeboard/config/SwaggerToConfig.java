@@ -21,7 +21,7 @@ public class SwaggerToConfig {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
-            .apis(RequestHandlerSelectors.basePackage("com.jinbkim.noticeboard.api"))
+            .apis(RequestHandlerSelectors.any())
             .paths(PathSelectors.any()).build();
     }
 
