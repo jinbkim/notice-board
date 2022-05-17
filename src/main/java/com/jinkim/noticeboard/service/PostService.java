@@ -25,7 +25,27 @@ public class PostService {
             .title(postDto.getTitle())
             .content(postDto.getContent())
             .build();
-        return postRepository.save(post);
+        return savePost(post);
+    }
+
+    /**
+     * DB에 게시물 저장
+     * @param post 저장할 게시물
+     * @return 저장된 게시물
+     */
+    private Post savePost(Post post) {
+        Integer maxId;
+        if (post.getId() == null) {  // Post 생성
+            maxId = postRepository.findPostMaxId();
+            if (maxId == null)  // post 테이블이 비어 있을 경우
+                maxId = 0;
+
+            postRepository.createPost(++maxId);
+            post.setId(maxId);
+        }
+
+        postRepository.updatePost(post.getId(), post.getTitle(), post.getContent());
+        return post;
     }
 
 
@@ -36,7 +56,7 @@ public class PostService {
      * @return 조회할 게시물
      */
     public Post findPostById(Integer id) {
-        return postRepository.findById(id).orElse(null);
+        return postRepository.findPostById(id).orElse(null);
     }
 
     /**
@@ -44,7 +64,7 @@ public class PostService {
      * @return 게시물 리스트
      */
     public List<Post> findPageList() {
-        return postRepository.findAll();
+        return postRepository.findPostAll();
     }
 
 
@@ -59,7 +79,7 @@ public class PostService {
             .title(postDto.getTitle())
             .content(postDto.getContent())
             .build();
-        return postRepository.save(post);
+        return savePost(post);
     }
 
 
@@ -69,8 +89,7 @@ public class PostService {
      * @param id 삭제할 게시물 아이디
      */
     public void deletePost(Integer id) {
-        Post post = postRepository.findById(id).orElse(null);
-        postRepository.delete(post);
+        postRepository.deletePostById(id);
     }
 
 

@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -44,8 +46,28 @@ public class UploadFileService {
         for (MultipartFile multipartFile : multipartFiles) {
             if (multipartFile.isEmpty())
                 continue;
-            uploadFileRepository.save(addFile(postId, multipartFile));
+            saveUploadFile(addFile(postId, multipartFile));
         }
+    }
+
+    /**
+     * DB에 첨부파일 저장
+     * @param uploadFile 저장할 파일
+     * @return 저장된 파일
+     */
+    private UploadFile saveUploadFile(UploadFile uploadFile) {
+        Integer maxId;
+        if (uploadFile.getId() == null) {  // UploadFile 생성시
+            maxId = uploadFileRepository.findUploadFileMaxId();
+            if (maxId == null)  // upload_file 테이블이 비어 있을 경우
+                maxId = 0;
+
+            uploadFileRepository.createUploadFile(++maxId);
+            uploadFile.setId(maxId);
+        }
+
+        uploadFileRepository.updateUploadFile(uploadFile.getId(), uploadFile.getPostId(), uploadFile.getUploadFilename(), uploadFile.getStoreFilename());
+        return uploadFile;
     }
 
     /**
@@ -101,7 +123,7 @@ public class UploadFileService {
      * @return 다운로드할 파일
      */
     public ResponseEntity<Resource> downloadUploadFiles(Integer id) throws MalformedURLException {
-        UploadFile uploadFile = uploadFileRepository.findById(id).orElse(null);
+        UploadFile uploadFile = uploadFileRepository.findUploadFileById(id).orElse(null);
         UrlResource urlResource = new UrlResource("file:" + getFullPath(uploadFile.getStoreFilename()));
         String encodedUploadFilename = UriUtils.encode(uploadFile.getUploadFilename(), StandardCharsets.UTF_8);
         String contentDisposition = "attachment; filename=\"" + encodedUploadFilename + "\"";
@@ -115,7 +137,7 @@ public class UploadFileService {
      * @return 조회할 첨부파일 리스트
      */
     public List<UploadFile> getUploadFiles(Integer postId) {
-        List<UploadFile> uploadFiles = uploadFileRepository.findAll();
+        List<UploadFile> uploadFiles = uploadFileRepository.findUploadFileAll();
 
         return uploadFiles.stream()
             .filter(file -> file.getPostId() == postId)
@@ -130,7 +152,14 @@ public class UploadFileService {
      */
     public void deleteUploadFileByPostId(Integer postId) {
         findUploadFileByPostId(postId).stream()
-            .forEach(uploadFile -> { uploadFileRepository.delete(uploadFile); });
+            .forEach(uploadFile -> {
+                try {
+                    uploadFileRepository.deleteUploadFileById(uploadFile.getId());
+                    Files.delete(Paths.get(getFullPath(uploadFile.getStoreFilename())));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
     }
 
     /**
@@ -139,7 +168,7 @@ public class UploadFileService {
      * @return 파일 리스트
      */
     private List<UploadFile> findUploadFileByPostId(Integer postId) {
-       return uploadFileRepository.findAll().stream()
+       return uploadFileRepository.findUploadFileAll().stream()
            .filter(uploadFile -> uploadFile.getPostId() == postId)
            .collect(Collectors.toList());
     }
